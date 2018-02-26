@@ -15,6 +15,10 @@ elif [[ $SLUG_URL ]]; then
 	tar -xzf slug.tgz -C $HOME
 	rm slug.tgz
 	unset SLUG_URL
+elif [[ $SLUG_S3 ]]; then
+    aws s3 cp $SLUG_S3 slug.tgz
+    tar -xzf slug.tgz -C $HOME
+    unset SLUG_S3
 else
 	cat | tar -xzC $HOME
 fi

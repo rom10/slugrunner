@@ -14,11 +14,18 @@ EXPOSE 5000
 ADD ./runner /runner
 ADD ./bin /bin
 ADD https://storage.googleapis.com/object-storage-cli/bb8e054/objstorage-bb8e054-linux-amd64 /bin/objstorage
+ADD https://s3.amazonaws.com/aws-cli/awscli-bundle.zip /tmp
+RUN unzip /tmp/awscli-bundle.zip
+RUN awscli-bundle/install -b /bin/aws -i /opt/aws
+RUN rm -rf /tmp/awscli-bundle.zip awscli-bundle
 RUN chmod +x /bin/objstorage && \
-    chown slug:slug /app \
+    chown -R slug:slug /app \
                     /runner/init \
                     /bin/get_object \
-                    /bin/objstorage
+                    /bin/objstorage \
+                    /bin/aws \
+                    /opt/aws
+RUN apt-get update && apt-get install -y --no-install-recommends bsdtar && ln -sf /usr/bin/bsdtar /bin/tar && rm -rf /var/lib/apt/lists/*
 
 USER slug
 ENV HOME /app
